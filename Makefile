@@ -1,6 +1,6 @@
 # Run commands even if files exist
 .PHONY: *
-PACKAGE = skeleton
+PACKAGE = typing
 
 # Perform a composer install
 install: composer.json
@@ -23,7 +23,7 @@ psalm: vendor/bin/psalm psalm.xml
 	./vendor/bin/psalm --no-cache --shepherd
 
 # Run the PHPStan static analysis
-psalm: vendor/bin/phpstan phpstan.neon
+phpstan: vendor/bin/phpstan phpstan.neon
 	./vendor/bin/phpstan analyse -c phpstan.neon
 
 # Run the infection mutation testing
