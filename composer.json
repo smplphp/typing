@@ -1,6 +1,6 @@
 {
-  "name": "smplphp/skeleton",
-  "description": "A simple modern PHP skeleton library",
+  "name": "smplphp/typing",
+  "description": "A simple, modern PHP typing package, encapsulating the logic behind PHPs typing system.",
   "minimum-stability": "stable",
   "license": "MIT",
   "type": "library",
@@ -22,13 +22,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Smpl\\Skeleton\\": "src/",
-      "Smpl\\Meta\\Skeleton\\": "meta/"
+      "Smpl\\Typing\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Smpl\\Skeleton\\Tests\\": "tests/"
+      "Smpl\\Typing\\Tests\\": "tests/"
     }
   },
   "config": {
