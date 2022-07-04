@@ -227,7 +227,7 @@ class IterableTypeTest extends TestCase
     /**
      * @test
      */
-    public function string_types_are_not_of_non_iterable_value_type(): void
+    public function iterable_types_are_not_of_non_iterable_value_type(): void
     {
         self::assertFalse($this->type->isOfType(true));
         self::assertFalse($this->type->isOfType(1));
