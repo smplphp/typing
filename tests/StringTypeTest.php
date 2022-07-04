@@ -7,6 +7,7 @@ namespace Smpl\Typing\Tests;
 use PHPUnit\Framework\TestCase;
 use Smpl\Typing\Contracts\ChildType;
 use Smpl\Typing\Contracts\Type;
+use Smpl\Typing\Tests\Fixtures\IterableClass;
 use Smpl\Typing\Tests\Fixtures\StringableClass;
 use Smpl\Typing\Types\Primitives\Compound\IterableType;
 use function Smpl\Typing\type_of;
@@ -205,5 +206,19 @@ class StringTypeTest extends TestCase
     public function string_types_are_of_stringable_value_type(): void
     {
         self::assertTrue($this->type->isOfType(new StringableClass()));
+    }
+
+    /**
+     * @test
+     */
+    public function string_types_are_not_of_non_string_or_stringable_value_type(): void
+    {
+        self::assertFalse($this->type->isOfType(true));
+        self::assertFalse($this->type->isOfType(1));
+        self::assertFalse($this->type->isOfType(1.0));
+        self::assertFalse($this->type->isOfType(false));
+        self::assertFalse($this->type->isOfType(null));
+        self::assertFalse($this->type->isOfType([]));
+        self::assertFalse($this->type->isOfType(new IterableClass()));
     }
 }
