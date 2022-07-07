@@ -105,7 +105,7 @@ trait IsClassType
             return false;
         }
 
-        return $type->getName() === $this->getName() || $type->isSuperclassOf($this);
+        return $type->getName() === $this->getName() || $type->isSubclassOf($this);
     }
 
     public function isAssignableTo(string|Type $type): bool
@@ -116,7 +116,7 @@ trait IsClassType
             return false;
         }
 
-        return $type->getName() === $this->getName() || $type->isSubclassOf($this);
+        return $type->getName() === $this->getName() || $type->isSuperclassOf($this);
     }
 
     public function isSubclassOf(string|Type $type): bool
@@ -143,9 +143,13 @@ trait IsClassType
 
     public function isOfType(mixed $value): bool
     {
+        if (! is_object($value)) {
+            return false;
+        }
+
         $className = $this->getName();
 
-        return $value instanceof $className;
+        return $value instanceof $className || $this->isSubclassOf($value::class);
     }
 
     public function isClass(): bool
