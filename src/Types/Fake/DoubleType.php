@@ -30,4 +30,19 @@ final class DoubleType implements ChildType
     {
         return true;
     }
+
+    public function isNative(): bool
+    {
+        return false;
+    }
+
+    public function isBuiltin(): bool
+    {
+        return false;
+    }
+
+    public function isNativeStandaloneType(): bool
+    {
+        return false;
+    }
 }
