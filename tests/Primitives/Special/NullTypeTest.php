@@ -35,7 +35,7 @@ class NullTypeTest extends TestCase
     /**
      * @test
      */
-    public function null_types_are_named_string(): void
+    public function null_types_are_named_null(): void
     {
         $this->assertEquals('null', $this->type->getName());
     }

@@ -35,7 +35,7 @@ class ResourceTypeTest extends TestCase
     /**
      * @test
      */
-    public function resource_types_are_named_string(): void
+    public function resource_types_are_named_resource(): void
     {
         $this->assertEquals('resource', $this->type->getName());
     }

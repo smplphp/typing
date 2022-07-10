@@ -37,7 +37,7 @@ class ObjectTypeTest extends TestCase
     /**
      * @test
      */
-    public function object_types_are_named_array(): void
+    public function object_types_are_named_object(): void
     {
         $this->assertEquals('object', $this->type->getName());
     }

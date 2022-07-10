@@ -21,6 +21,7 @@ use function Smpl\Typing\type_of;
  * @group types
  * @group primitives
  * @group special
+ * @group bool
  * @group false
  */
 class FalseTypeTest extends TestCase
@@ -35,7 +36,7 @@ class FalseTypeTest extends TestCase
     /**
      * @test
      */
-    public function false_types_are_named_string(): void
+    public function false_types_are_named_false(): void
     {
         $this->assertEquals('false', $this->type->getName());
     }

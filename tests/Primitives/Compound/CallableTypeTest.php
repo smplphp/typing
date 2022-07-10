@@ -39,7 +39,7 @@ class CallableTypeTest extends TestCase
     /**
      * @test
      */
-    public function callable_types_are_named_array(): void
+    public function callable_types_are_named_callable(): void
     {
         $this->assertEquals('callable', $this->type->getName());
     }
