@@ -30,6 +30,11 @@ final class TrueType implements Type
         return false;
     }
 
+    public function isBuiltin(): bool
+    {
+        return false;
+    }
+
     public function isSpecial(): bool
     {
         return true;
