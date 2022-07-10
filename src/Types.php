@@ -136,7 +136,7 @@ final class Types
         }
 
         if ($isClass) {
-            if (! is_subclass_of($class, ClassType::class)) {
+            if (! is_subclass_of($class, Contracts\ClassType::class)) {
                 throw TypingException::invalidClassMapping($type, $class);
             }
 
