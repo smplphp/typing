@@ -36,10 +36,4 @@ infection-report: vendor/bin/infection infection.json
 
 # Run the full test suite
 test:
-	make phpunit-report infection psalm phpstan
-
-# Split the repository
-split: meta
-	git subtree split -P meta -b meta-split --squash -m "split: Splitting out the $(PACKAGE) meta package"
-	cd ../meta-$(PACKAGE)
-	git subtree pull -P src ../$(PACKAGE) meta-split --squash -m "split: Updating the meta split"
+	make phpunit-report infection-report psalm phpstan

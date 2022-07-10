@@ -12,10 +12,11 @@ use Smpl\Typing\Contracts\Type;
  */
 trait IsCompositeType
 {
-    private array $childTypes;
+    private array $childTypes = [];
 
     private int $comparisonMode = CompositeType::OR;
 
+    /** @infection-ignore-all  */
     protected function setChildTypes(array $childTypes): static
     {
         $this->childTypes = $childTypes;
@@ -66,5 +67,16 @@ trait IsCompositeType
         }
 
         return false;
+    }
+
+    protected function checkChildrenFor(string $method, bool $compareTo, bool $return): bool
+    {
+        foreach ($this->getChildTypes() as $childType) {
+            if ($childType->{$method}() === $compareTo) {
+                return $return;
+            }
+        }
+
+        return ! $return;
     }
 }

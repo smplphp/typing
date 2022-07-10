@@ -10,6 +10,6 @@ class StringableClass implements Stringable
 {
     public function __toString(): string
     {
-        return 'stringable-class';
+        return 'I am a string';
     }
 }

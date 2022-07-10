@@ -21,6 +21,7 @@ final class ArrayType implements ChildType
 
     public function __construct()
     {
+        /** @infection-ignore-all  */
         $this->setParentType(type_of('iterable'));
     }
 

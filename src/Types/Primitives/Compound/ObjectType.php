@@ -7,16 +7,20 @@ namespace Smpl\Typing\Types\Primitives\Compound;
 use Smpl\Typing\Concerns\IsPrimitiveType;
 use Smpl\Typing\Contracts\ClassType;
 use Smpl\Typing\Contracts\Type;
-use Traversable;
 use function Smpl\Typing\type_of_or_return;
 
-final class IterableType implements Type
+final class ObjectType implements Type
 {
     use IsPrimitiveType;
 
     public function getName(): string
     {
-        return 'iterable';
+        return 'object';
+    }
+
+    public function isOfType(mixed $value): bool
+    {
+        return is_object($value);
     }
 
     public function isCompound(): bool
@@ -28,16 +32,6 @@ final class IterableType implements Type
     {
         $type = type_of_or_return($type);
 
-        if ($type instanceof ClassType) {
-            return $type->isSubclassOf(Traversable::class);
-        }
-
-        /** @infection-ignore-all  */
-        return $type instanceof self || $type->isAssignableTo($this);
-    }
-
-    public function isOfType(mixed $value): bool
-    {
-        return is_iterable($value);
+        return $type->getName() === 'object' || $type instanceof ClassType;
     }
 }

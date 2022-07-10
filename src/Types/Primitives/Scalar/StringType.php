@@ -30,7 +30,10 @@ final class StringType implements Type
     {
         $type = type_of_or_return($type);
 
-        if ($type instanceof ClassType && $type->isSubclassOf(Stringable::class)) {
+        if (
+            $type instanceof ClassType &&
+            ($type->getName() === Stringable::class || $type->isSubclassOf(Stringable::class))
+        ) {
             return true;
         }
 
