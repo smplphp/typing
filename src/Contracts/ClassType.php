@@ -2,6 +2,9 @@
 
 namespace Smpl\Typing\Contracts;
 
+use ReflectionClass;
+use Reflector;
+
 /**
  * Class Type Contract
  *
@@ -9,6 +12,20 @@ namespace Smpl\Typing\Contracts;
  */
 interface ClassType extends Type
 {
+    /**
+     * Get the full qualified name of the class.
+     *
+     * @return class-string
+     */
+    public function getName(): string;
+
+    /**
+     * Get a reflection instance for the class.
+     *
+     * @return \ReflectionClass
+     */
+    public function getReflection(): ReflectionClass;
+
     /**
      * Is the current class a subclass of the provided class.
      *

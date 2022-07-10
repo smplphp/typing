@@ -23,7 +23,7 @@ interface CompositeType extends Type
     /**
      * Get the child types for the current type.
      *
-     * @return \Smpl\Typing\Contracts\Type[]
+     * @return list<\Smpl\Typing\Contracts\Type>
      */
     public function getChildTypes(): array;
 

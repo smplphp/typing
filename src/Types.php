@@ -19,6 +19,9 @@ use Traversable;
 
 final class Types
 {
+    /**
+     * @var array<string, class-string<\Smpl\Typing\Contracts\Type>>
+     */
     public const PRIMITIVE_TYPES = [
         // Scalar types
         'bool'     => Types\Primitives\Scalar\BoolType::class,
@@ -38,15 +41,27 @@ final class Types
         'false'    => Types\Primitives\Special\FalseType::class,
     ];
 
-    public const SPECIAL_CLASS_TYPES = [
-        Stringable::class  => Types\Classes\Special\StringableType::class,
-        Traversable::class => Types\Classes\Special\TraversableType::class,
-        Closure::class     => Types\Classes\Special\ClosureType::class,
-    ];
-
+    /**
+     * @var array<string, class-string<\Smpl\Typing\Contracts\Type>>
+     */
     public const FAKE_TYPES = [
         'double' => Types\Fake\DoubleType::class,
         'true'   => Types\Fake\TrueType::class,
+    ];
+
+    /**
+     * @var array<class-string, class-string<\Smpl\Typing\Contracts\Type>>
+     */
+    public const CLASS_TYPES = [
+        Closure::class => Types\Classes\Special\ClosureType::class,
+    ];
+
+    /**
+     * @var array<class-string, class-string<\Smpl\Typing\Contracts\Type>>
+     */
+    public const SPECIAL_CLASS_TYPES = [
+        Stringable::class  => Types\Classes\Special\StringableType::class,
+        Traversable::class => Types\Classes\Special\TraversableType::class,
     ];
 
     private static self $instance;
@@ -61,17 +76,17 @@ final class Types
     }
 
     /**
-     * @var array<string, class-string>
+     * @var array<string, class-string<\Smpl\Typing\Contracts\Type>>
      */
     private array $mappings = [];
 
     /**
-     * @var array<class-string, class-string>
+     * @var array<class-string, class-string<\Smpl\Typing\Contracts\ClassType>>
      */
     private array $classMappings = [];
 
     /**
-     * @var array<class-string, class-string>
+     * @var array<class-string, class-string<\Smpl\Typing\Contracts\ClassType>>
      */
     private array $specialClassMappings = [];
 
@@ -84,6 +99,7 @@ final class Types
     {
         $this->registerAll(self::PRIMITIVE_TYPES)
              ->registerAll(self::FAKE_TYPES)
+             ->registerAll(self::CLASS_TYPES, true)
              ->registerAll(self::SPECIAL_CLASS_TYPES, true, true);
     }
 
@@ -103,6 +119,16 @@ final class Types
         return $type;
     }
 
+    /**
+     * @param string|class-string                       $type
+     * @param class-string<\Smpl\Typing\Contracts\Type> $class
+     * @param bool                                      $isClass
+     * @param bool                                      $isSpecialClass
+     *
+     * @return static
+     *
+     * @throws \Smpl\Typing\Exceptions\TypingException
+     */
     public function register(string $type, string $class, bool $isClass = false, bool $isSpecialClass = false): self
     {
         if (! ClassHelper::isClass($class)) {
@@ -110,9 +136,15 @@ final class Types
         }
 
         if ($isClass) {
+            if (! is_subclass_of($class, ClassType::class)) {
+                throw TypingException::invalidClassMapping($type, $class);
+            }
+
             if ($isSpecialClass) {
+                /** @psalm-suppress PropertyTypeCoercion */
                 $this->specialClassMappings[$type] = $class;
             } else {
+                /** @psalm-suppress PropertyTypeCoercion */
                 $this->classMappings[$type] = $class;
             }
         } else {
@@ -123,7 +155,16 @@ final class Types
         return $this;
     }
 
-    public function registerAll(iterable $types, bool $isClass = false, bool $isSpecialClass = false): self
+    /**
+     * @param array<string|class-string, class-string<\Smpl\Typing\Contracts\Type>> $types
+     * @param bool                                                                  $isClass
+     * @param bool                                                                  $isSpecialClass
+     *
+     * @return static
+     *
+     * @throws \Smpl\Typing\Exceptions\TypingException
+     */
+    public function registerAll(array $types, bool $isClass = false, bool $isSpecialClass = false): self
     {
         foreach ($types as $type => $class) {
             $this->register($type, $class, $isClass, $isSpecialClass);
@@ -139,6 +180,11 @@ final class Types
         return isset($this->mappings[$type]);
     }
 
+    /**
+     * @param string $type
+     *
+     * @return class-string<\Smpl\Typing\Contracts\Type>|null
+     */
     public function getMappedType(string $type): ?string
     {
         $type = strtolower($type);
@@ -153,11 +199,23 @@ final class Types
         return isset($this->mappings[$type]);
     }
 
+    /**
+     * @param string $type
+     *
+     * @return class-string<\Smpl\Typing\Contracts\ClassType>|null
+     */
     public function getMappedClassType(string $type): ?string
     {
         return $this->classMappings[$type] ?? null;
     }
 
+    /**
+     * @param string|class-string $typeName
+     *
+     * @return \Smpl\Typing\Contracts\Type
+     *
+     * @throws \Smpl\Typing\Exceptions\TypingException
+     */
     public function make(string $typeName): Contracts\Type
     {
         if (TypeHelper::isSingleNullableType($typeName)) {
@@ -192,12 +250,23 @@ final class Types
         }
 
         if (ClassHelper::isValidClass($typeName)) {
+            /**
+             * @var class-string $typeName
+             * @psalm-suppress ArgumentTypeCoercion
+             */
             return $this->makeClassType($typeName);
         }
 
         return $this->makeBasicType($typeName);
     }
 
+    /**
+     * @param string|class-string $typeName
+     *
+     * @return \Smpl\Typing\Types\Composites\NullableType
+     *
+     * @throws \Smpl\Typing\Exceptions\TypingException
+     */
     protected function makeNullableType(string $typeName): NullableType
     {
         if ($typeName === 'null') {
@@ -207,6 +276,17 @@ final class Types
         return new NullableType($this->setCached($this->make($typeName)));
     }
 
+    /**
+     * @param string|class-string $typeName
+     *
+     * @return \Smpl\Typing\Contracts\Type
+     *
+     * @throws \Smpl\Typing\Exceptions\TypingException
+     *
+     * @psalm-suppress NullableReturnStatement
+     * @psalm-suppress MoreSpecificReturnType
+     * @psalm-suppress InvalidNullableReturnType
+     */
     protected function makeBasicType(string $typeName): Contracts\Type
     {
         $typeName = strtolower($typeName);
@@ -221,10 +301,27 @@ final class Types
             throw TypingException::noMapping($typeName);
         }
 
+        /**
+         * @var class-string<\Smpl\Typing\Contracts\Type> $typeClass
+         */
+
         return $this->setCached(new $typeClass);
     }
 
-    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    /**
+     * @param class-string $className
+     *
+     * @return \Smpl\Typing\Contracts\ClassType
+     *
+     * @noinspection   PhpIncompatibleReturnTypeInspection
+     *
+     * @throws \Smpl\Typing\Exceptions\TypingException
+     *
+     * @psalm-suppress LessSpecificReturnStatement
+     * @psalm-suppress NullableReturnStatement
+     * @psalm-suppress MoreSpecificReturnType
+     * @psalm-suppress InvalidNullableReturnType
+     */
     protected function makeClassType(string $className): Contracts\ClassType
     {
         if ($this->isCached($className)) {
@@ -232,6 +329,9 @@ final class Types
         }
 
         $typeClass = $this->getMappedClassType($className);
+        /**
+         * @var \Smpl\Typing\Contracts\ClassType|null $classType
+         */
         $classType = null;
 
         if ($typeClass !== null) {
@@ -255,11 +355,24 @@ final class Types
                     break;
                 }
             }
+
+            /**
+             * @var \Smpl\Typing\Contracts\ClassType $classType
+             */
+
+            return $this->setCached($classType);
         }
 
-        return $classType;
+        throw TypingException::invalidClass($className);
     }
 
+    /**
+     * @param string $typeName
+     *
+     * @return \Smpl\Typing\Contracts\Type
+     *
+     * @throws \Smpl\Typing\Exceptions\TypingException
+     */
     protected function makeUnionType(string $typeName): Contracts\Type
     {
         $typeNames = TypeHelper::getUnionTypesFromType($typeName);
@@ -273,6 +386,13 @@ final class Types
         return $this->setCached(new UnionType($subTypes));
     }
 
+    /**
+     * @param string $typeName
+     *
+     * @return \Smpl\Typing\Contracts\Type
+     *
+     * @throws \Smpl\Typing\Exceptions\TypingException
+     */
     protected function makeIntersectionType(string $typeName): Contracts\Type
     {
         $typeNames = TypeHelper::getIntersectionTypesFromType($typeName);

@@ -13,7 +13,37 @@ trait IsClassType
 {
     private ReflectionClass $reflection;
 
-    protected function getReflection(): ReflectionClass
+    /**
+     * @var class-string
+     */
+    private string $className;
+
+    /**
+     * @param class-string $className
+     *
+     * @return static
+     */
+    protected function setClassName(string $className): static
+    {
+        $this->className = $className;
+        return $this;
+    }
+
+    /**
+     * @return class-string
+     */
+    public function getName(): string
+    {
+        return $this->className;
+    }
+
+    /**
+     * @return \ReflectionClass
+     * @throws \ReflectionException
+     *
+     * @psalm-suppress ArgumentTypeCoercion
+     */
+    public function getReflection(): ReflectionClass
     {
         if (! isset($this->reflection)) {
             $this->reflection = new ReflectionClass($this->getName());

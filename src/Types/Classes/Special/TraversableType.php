@@ -40,7 +40,7 @@ class TraversableType implements ClassTypeContract, CompositeType
     }
 
     /** @codeCoverageIgnore  */
-    protected function getReflection(): ReflectionClass
+    public function getReflection(): ReflectionClass
     {
         return $this->implementation->getReflection();
     }

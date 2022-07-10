@@ -7,16 +7,20 @@ namespace Smpl\Typing\Concerns;
 use Smpl\Typing\Contracts\CompositeType;
 use Smpl\Typing\Contracts\Type;
 
-/**
- *
- */
 trait IsCompositeType
 {
+    /**
+     * @var list<\Smpl\Typing\Contracts\Type>
+     */
     private array $childTypes = [];
 
     private int $comparisonMode = CompositeType::OR;
 
-    /** @infection-ignore-all  */
+    /**
+     * @param list<\Smpl\Typing\Contracts\Type> $childTypes
+     *
+     * @infection-ignore-all
+     */
     protected function setChildTypes(array $childTypes): static
     {
         $this->childTypes = $childTypes;
@@ -29,6 +33,9 @@ trait IsCompositeType
         return $this;
     }
 
+    /**
+     * @return list<\Smpl\Typing\Contracts\Type>
+     */
     public function getChildTypes(): array
     {
         return $this->childTypes;

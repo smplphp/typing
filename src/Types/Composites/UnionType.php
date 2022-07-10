@@ -13,6 +13,9 @@ class UnionType implements CompositeType
 {
     use IsCompositeType, ProxiesToChildren;
 
+    /**
+     * @param list<\Smpl\Typing\Contracts\Type> $subTypes
+     */
     public function __construct(array $subTypes)
     {
         $this->setChildTypes($subTypes);

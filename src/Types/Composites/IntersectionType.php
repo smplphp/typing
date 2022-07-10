@@ -13,6 +13,9 @@ class IntersectionType implements CompositeType
 {
     use IsCompositeType, ProxiesToChildren;
 
+    /**
+     * @param list<\Smpl\Typing\Contracts\ClassType> $subTypes
+     */
     public function __construct(array $subTypes)
     {
         $this->setChildTypes($subTypes)

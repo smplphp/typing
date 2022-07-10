@@ -11,16 +11,12 @@ class ClassType implements ClassTypeContract
 {
     use IsClassType;
 
-    private string $className;
-
+    /**
+     * @param class-string $className
+     */
     public function __construct(string $className)
     {
-        $this->className = $className;
-    }
-
-    public function getName(): string
-    {
-        return $this->className;
+        $this->setClassName($className);
     }
 
     public function isClass(): bool

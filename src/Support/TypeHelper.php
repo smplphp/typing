@@ -39,11 +39,24 @@ final class TypeHelper
             && ! str_ends_with($typeName, self::INTERSECTION_SEPARATOR);
     }
 
+    /**
+     * @param string $typeName
+     *
+     * @return array<string|class-string>
+     */
     public static function getUnionTypesFromType(string $typeName): array
     {
         return explode(self::UNION_SEPARATOR, $typeName);
     }
 
+    /**
+     * @param string $typeName
+     *
+     * @return class-string[]
+     *
+     * @psalm-suppress MoreSpecificReturnType
+     * @psalm-suppress LessSpecificReturnStatement
+     */
     public static function getIntersectionTypesFromType(string $typeName): array
     {
         return explode(self::INTERSECTION_SEPARATOR, $typeName);

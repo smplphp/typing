@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Typing\Exceptions;
 
 use Exception;
+use Smpl\Typing\Contracts\ClassType;
 
 final class TypingException extends Exception
 {
@@ -52,6 +53,16 @@ final class TypingException extends Exception
         return new self(sprintf(
             'The provided type \'%s\', is not a valid intersection type',
             $typeName
+        ));
+    }
+
+    public static function invalidClassMapping(string $typeName, string $className): self
+    {
+        return new self(sprintf(
+            'The provided type class \'%s\' for \'%s\' must implements %s',
+            $className,
+            $typeName,
+            ClassType::class
         ));
     }
 }

@@ -18,7 +18,7 @@ function type_of_or_return(string|Contracts\Type $type): Contracts\Type
 
 function type_from(mixed $value): Contracts\Type
 {
-
+    return type_of(get_debug_type($value));
 }
 
 function is_class(string $className): bool
